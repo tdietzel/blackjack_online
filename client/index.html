@@ -16,10 +16,10 @@
     <div id="bet"></div>
     <button id="hit">Hit</button>
     <button id="stand">Stand</button>
-    <h1>Your Hand</h1>
-    <div id="client-card-container"></div>
-    <h1>House Hand</h1>
-    <div id="house-card-container"></div>
+    <h1>Your Hand = <span id="client-card-total"></span></h1>
+    <div id="client-card-upper"></div>
+    <h1>House Hand = <span id="house-card-total"></span></h1>
+    <div id="house-card-upper"></div>
   </div>
 
   <script>
@@ -47,64 +47,83 @@
           document.getElementById('bet').textContent = `Current Bet: ${data.clientBet}`;
         }
         if (data.event === 'DEAL_CLIENT') {
-          const clientCards = document.getElementById('client-card-container');
+          let cardTotal = 0;
+
           data.clientDeck.forEach(card => {
+            const cardContainer = document.createElement('div');
+            const h3Before = document.createElement('h3');
+            const h3After = document.createElement('h3');
+            const clientUpper = document.getElementById('client-card-upper')
+
+            const rankValue = isNaN(parseInt(card.rank)) ?
+              (card.rank === 'K' || card.rank === 'Q' || card.rank === 'J' ? 10 : 0) :
+              parseInt(card.rank);
+
+            cardTotal += rankValue;
+
+            h3Before.innerText = `${card.rank}`;
+            h3After.innerText = `${card.rank}`;
+
+            const img = document.createElement('img');
+            img.width = '100';
+            img.height = '100';
+
             if (card.suit === 'Spades') {
-              const img = document.createElement('img');
               img.src = '../public/spades.png';
-              img.width = '100';
-              img.height = '100';
-              clientCards.appendChild(img);
             } else if (card.suit === 'Diamonds') {
-              const img = document.createElement('img');
               img.src = '../public/diamonds.png';
-              img.width = '100';
-              img.height = '100';
-              clientCards.appendChild(img);
             } else if (card.suit === 'Hearts') {
-              const img = document.createElement('img');
               img.src = '../public/hearts.png';
-              img.width = '100';
-              img.height = '100';
-              clientCards.appendChild(img);
             } else if (card.suit === 'Clubs') {
-              const img = document.createElement('img');
               img.src = '../public/clubs.png';
-              img.width = '100';
-              img.height = '100';
-              clientCards.appendChild(img);
             }
+
+            cardContainer.appendChild(h3Before);
+            cardContainer.appendChild(img);
+            cardContainer.appendChild(h3After);
+            clientUpper.appendChild(cardContainer);
           });
+          document.getElementById('client-card-total').innerText = cardTotal;
         }
+        
         if (data.event === 'DEAL_HOUSE') {
-          const houseCards = document.getElementById('house-card-container');
+          let cardTotal = 0;
+
           data.houseDeck.forEach(card => {
+            const cardContainer = document.createElement('div');
+            const h3Before = document.createElement('h3');
+            const h3After = document.createElement('h3');
+            const houseUpper = document.getElementById('house-card-upper')
+
+            const rankValue = isNaN(parseInt(card.rank)) ?
+              (card.rank === 'K' || card.rank === 'Q' || card.rank === 'J' ? 10 : 0) :
+              parseInt(card.rank);
+
+            cardTotal += rankValue;
+
+            h3Before.innerText = `${card.rank}`;
+            h3After.innerText = `${card.rank}`;
+
+            const img = document.createElement('img');
+            img.width = '100';
+            img.height = '100';
+
             if (card.suit === 'Spades') {
-              const img = document.createElement('img');
               img.src = '../public/spades.png';
-              img.width = '100';
-              img.height = '100';
-              houseCards.appendChild(img);
-            } else if(card.suit === 'Diamonds') {
-              const img = document.createElement('img');
+            } else if (card.suit === 'Diamonds') {
               img.src = '../public/diamonds.png';
-              img.width = '100';
-              img.height = '100';
-              houseCards.appendChild(img);
-            } else if(card.suit === 'Hearts') {
-              const img = document.createElement('img');
+            } else if (card.suit === 'Hearts') {
               img.src = '../public/hearts.png';
-              img.width = '100';
-              img.height = '100';
-              houseCards.appendChild(img);
-            } else if(card.suit === 'Clubs') {
-              const img = document.createElement('img');
+            } else if (card.suit === 'Clubs') {
               img.src = '../public/clubs.png';
-              img.width = '100';
-              img.height = '100';
-              houseCards.appendChild(img);
             }
-          });
+
+            cardContainer.appendChild(h3Before);
+            cardContainer.appendChild(img);
+            cardContainer.appendChild(h3After);
+            houseUpper.appendChild(cardContainer);
+          })
+          document.getElementById('house-card-total').innerText = cardTotal;
         }
       };
 
