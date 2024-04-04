@@ -1,0 +1,16 @@
+{
+  "name": "blackjack_online",
+  "version": "1.0.0",
+  "description": "online blackjack game",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Trent Dietzel",
+  "license": "MIT",
+  "dependencies": {
+    "uuid": "^9.0.1",
+    "ws": "^8.14.2"
+  }
+}
