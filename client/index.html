@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blackjack Game</title>
+</head>
+
+<body>
+  <h1>Welcome to Blackjack!</h1>
+  <input id="bet-amount" type="text" placeholder="Enter bet amount" />
+  <button id="start-game">Start Game</button>
+  <div id="game-container" style="display: none">
+    <div id="balance"></div>
+    <div id="bet"></div>
+    <button id="hit">Hit</button>
+    <button id="stand">Stand</button>
+    <h1>Your Hand</h1>
+    <div id="client-card-container"></div>
+    <h1>House Hand</h1>
+    <div id="house-card-container"></div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const ws = new WebSocket('ws://localhost:8080');
+
+      ws.onopen = function () {
+        console.log('Connected to javascript server');
+        ws.send(JSON.stringify({ event: 'DEAL_HOUSE' }));
+      };
+
+      ws.onmessage = function (event) {
+        const data = JSON.parse(event.data);
+        console.log('Received message from server:', data);
+
+        if (data.event === 'JOINED') {
+          document.getElementById('balance').textContent = `Balance: ${data.coins}`;
+        }
+        if (data.event === 'BET_PLACED') {
+          gameStart = true;
+          document.getElementById('start-game').style.display = 'none';
+          document.getElementById('bet-amount').style.display = 'none';
+          document.getElementById('game-container').style.display = 'block';
+          document.getElementById('balance').textContent = `Balance: ${data.coins}`;
+          document.getElementById('bet').textContent = `Current Bet: ${data.clientBet}`;
+        }
+        if (data.event === 'DEAL_CLIENT') {
+          const clientCards = document.getElementById('client-card-container');
+          data.clientDeck.forEach(card => {
+            if (card.suit === 'Spades') {
+              const img = document.createElement('img');
+              img.src = '../public/spades.png';
+              img.width = '100';
+              img.height = '100';
+              clientCards.appendChild(img);
+            } else if (card.suit === 'Diamonds') {
+              const img = document.createElement('img');
+              img.src = '../public/diamonds.png';
+              img.width = '100';
+              img.height = '100';
+              clientCards.appendChild(img);
+            } else if (card.suit === 'Hearts') {
+              const img = document.createElement('img');
+              img.src = '../public/hearts.png';
+              img.width = '100';
+              img.height = '100';
+              clientCards.appendChild(img);
+            } else if (card.suit === 'Clubs') {
+              const img = document.createElement('img');
+              img.src = '../public/clubs.png';
+              img.width = '100';
+              img.height = '100';
+              clientCards.appendChild(img);
+            }
+          });
+        }
+        if (data.event === 'DEAL_HOUSE') {
+          const houseCards = document.getElementById('house-card-container');
+          data.houseDeck.forEach(card => {
+            if (card.suit === 'Spades') {
+              const img = document.createElement('img');
+              img.src = '../public/spades.png';
+              img.width = '100';
+              img.height = '100';
+              houseCards.appendChild(img);
+            } else if(card.suit === 'Diamonds') {
+              const img = document.createElement('img');
+              img.src = '../public/diamonds.png';
+              img.width = '100';
+              img.height = '100';
+              houseCards.appendChild(img);
+            } else if(card.suit === 'Hearts') {
+              const img = document.createElement('img');
+              img.src = '../public/hearts.png';
+              img.width = '100';
+              img.height = '100';
+              houseCards.appendChild(img);
+            } else if(card.suit === 'Clubs') {
+              const img = document.createElement('img');
+              img.src = '../public/clubs.png';
+              img.width = '100';
+              img.height = '100';
+              houseCards.appendChild(img);
+            }
+          });
+        }
+      };
+
+      document.getElementById('start-game').addEventListener('click', () => {
+        const betAmount = parseInt(document.getElementById('bet-amount').value);
+        ws.send(JSON.stringify({ event: 'START_GAME', betAmount: betAmount }));
+        ws.send(JSON.stringify({ event: 'DEAL_CLIENT' }));
+      });
+    });
+  </script>
+</body>
+
+</html>
